@@ -16,15 +16,16 @@ void Sim_sh_shell_cd(char **args)
 	{ /* If no argument is provided, change to HOME directory */
 		sh_dir = Sim_sh_getenv("HOME");
 		if (sh_dir == NULL)
+		{
 			Sim_sh_puterror("cd: No HOME directory found\n");
 			return;
+		}
 	}
 	if (sh_dir[0] == '~')
 	{ /* Expand tilde (~) to HOME directory */
 		home = Sim_sh_getenv("HOME");
 		if (home == NULL)
 			Sim_sh_puterror("cd: No HOME directory found\n");
-			return;
 		rest = sh_dir + 1;
 		home_len = _strlen(home);
 		rest_len = _strlen(rest);
@@ -45,7 +46,6 @@ void Sim_sh_shell_cd(char **args)
 	num = chdir(sh_dir);
 	if (num == -1)
 		perror("cd");
-	/* Free memory if expanded */
 	if (sh_dir != args[1]) /* Free memory */
 		free(sh_dir);
 }
