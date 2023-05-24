@@ -37,7 +37,7 @@ int Sim_sh_shell_setenv(char **args)
 	nom = args[1];
 	val = args[2];
 
-	return set_env_var(nom, val);
+	return (set_env_var(nom, val));
 }
 
 /**
