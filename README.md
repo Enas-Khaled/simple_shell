@@ -1,6 +1,6 @@
 # Simple Shell Project
 
-For ALX 
+For ALX
 
 ## Content:
 
