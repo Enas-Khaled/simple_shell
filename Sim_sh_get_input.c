@@ -20,7 +20,7 @@ char *Sim_sh_get_input(void)
 		if (tnread == -1)
 		{
 			free(tinput);
-			Sim_sh__puts("\n");
+			Sim_sh_puts("\n");
 			return (NULL);
 		}
 		/* to delete new_line trailing */
