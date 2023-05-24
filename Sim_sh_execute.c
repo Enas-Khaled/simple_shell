@@ -18,8 +18,10 @@ int Sim_sh_execute(char **argv)
 		return (Sim_sh_status);
 	id = fork(); /* child p */
 	if (id < 0)
+	{
 		Sim_sh_puterror("fork");
 		return (1);
+	}
 	/* check */
 	if (id == -1)
 		perror(argv[0]), Sim_sh_free_tokens(argv), Sim_sh_free_last_input();
@@ -34,17 +36,16 @@ int Sim_sh_execute(char **argv)
 		if (Sim_sh_cmd_path == NULL)
 			Sim_sh_cmd_path = argv[0];
 		if (execve(Sim_sh_cmd_path, argv, Sim_sh_envp) == -1)
+		{
 			perror(argv[0]);
 			Sim_sh_free_tokens(argv);
 			Sim_sh_free_last_input();
 			exit(EXIT_FAILURE);
+		}
 	} else
-	{ /* debug point */
 
 		do {
 			waitpid(id, &Sim_sh_status, WUNTRACED);
 		} while (!WIFEXITED(Sim_sh_status) && !WIFSIGNALED(Sim_sh_status));
-	}
-	/* return the stat */
 	return (Sim_sh_status);
 }
