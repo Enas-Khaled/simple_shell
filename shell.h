@@ -1,104 +1,134 @@
 #ifndef _SHELL_H_
 #define _SHELL_H_
-/* GNU */
-#define _GNU_SOURCE
-
 #include <fcntl.h>
-#include <errno.h>
-#include <stdarg.h>
-#include <ctype.h>
-#include <stdio.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <limits.h>
+#include <errno.h>
+#include <stdio.h>
 
-/*macros*/
-#define MAX_TOKENS 1024
-#define BUFFER_SIZE 1024
-#define PATH_MAX_LENGTH 4096
-#define PATH_SEPARATOR ":"
-#define PROMPT "$ "
+#define END_OF_FILE -2
+#define EXIT -3
 
-/* free */
-void Sim_sh_free_last_input(void);
-/* Sim_sh_get_line.c*/
-void *Sim_sh_get_line(void);
-/* Sim_sh_prompt.c */
-void Sim_sh_prompt(void);
+/* Global environemnt */
+extern char **environ;
+/* Global program name */
+char *name;
+/* Global history counter */
+int hist;
 
-/* Sim_sh_get_input.c */
-char *Sim_sh_get_input(void);
-/* Sim_sh_print */
-void Sim_sh_print_help_info(void);
-void Sim_sh_print_shell_info(void);
-int Sim_sh_set_env_var(const char *name, const char *value);
-/* Sim_sh_built-in funcs */
-int Sim_sh_shell_setenv(char **args);
-int Sim_sh_shell_unsetenv(char **args);
-int Sim_sh_shell_env(void);
-int Sim_sh_shell_clear(char **args);
-int Sim_sh_check_for_builtin(char **args);
-int Sim_sh_execute_buitlin(char *cmd, char **args);
-void Sim_sh_shell_help(void);
-void Sim_sh_shell_exit(char **args);
-void Sim_sh_shell_cd(char **args);
+/**
+ * struct list_s - A new struct type defining a linked list.
+ * @dir: A directory path.
+ * @next: A pointer to another struct list_s.
+ */
+typedef struct list_s
+{
+	char *dir;
+	struct list_s *next;
+} list_t;
 
-/* Sim_sh_signal_handler.c */
-void Sim_sh_handle_sigstp(int sig);
-void Sim_sh_handle_sigint(int sig);
-void Sim_sh_handle_sigquit(int sig);
+/**
+ * struct builtin_s - A new struct type defining builtin commands.
+ * @name: The name of the builtin command.
+ * @f: A function pointer to the builtin command's function.
+ */
+typedef struct builtin_s
+{
+	char *name;
+	int (*f)(char **argv, char **front);
+} builtin_t;
 
-/* Sim_sh_execute.c */
-int Sim_sh_execute(char **args);
+/**
+ * struct alias_s - A new struct defining aliases.
+ * @name: The name of the alias.
+ * @value: The value of the alias.
+ * @next: A pointer to another struct alias_s.
+ */
+typedef struct alias_s
+{
+	char *name;
+	char *value;
+	struct alias_s *next;
+} alias_t;
 
-/* Sim_sh_parser.c */
-char **Sim_sh_tokenize(char *str, const char *delim);
-char **Sim_sh_tokenize_input(char *input);
+/* Global aliases linked list */
+alias_t *aliases;
 
-/* Sim_sh_get_env.c */
-char *Sim_sh_getenv(const char *name);
+/* Main Helpers */
+ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+char **_strtok(char *line, char *delim);
+char *get_location(char *command);
+list_t *get_path_dir(char *path);
+int execute(char **args, char **front);
+void free_list(list_t *head);
+char *_itoa(int num);
 
-/* Sim_sh_get_path.c */
-char *Sim_sh_get_path(void);
+/* Input Helpers */
+void handle_line(char **line, ssize_t read);
+void variable_replacement(char **args, int *exe_ret);
+char *get_args(char *line, int *exe_ret);
+int call_args(char **args, char **front, int *exe_ret);
+int run_args(char **args, char **front, int *exe_ret);
+int handle_args(int *exe_ret);
+int check_args(char **args);
+void free_args(char **args, char **front);
+char **replace_aliases(char **args);
 
-/* Sim_sh_find_in_path.c */
-char *Sim_sh_find_in_path(char *command);
-
-/* Sim_sh_free.c */
-void Sim_sh_free_path(void);
-void Sim_sh_free_error(char **argv, char *arg);
-void Sim_sh_free_tokens(char **ptr);
-
-
-/* Sim_sh_error.c */
-void Sim_sh_puts(char *str);
-void Sim_sh_puterror(char *err);
-
-/* Sim_sh_utils_funcs1.c */
-int _strlen(const char *);
-int _strcmp(const char *s1, const char *s2);
-int _strncmp(const char *s1, const char *s2, size_t n);
-/* Sim_sh_utils_funcs1.c */
-char *_strstr(char *haystack, char *needle);
+/* String functions */
+int _strlen(const char *s);
+char *_strcat(char *dest, const char *src);
+char *_strncat(char *dest, const char *src, size_t n);
+char *_strcpy(char *dest, const char *src);
 char *_strchr(char *s, char c);
+int _strspn(char *s, char *accept);
+int _strcmp(char *s1, char *s2);
+int _strncmp(const char *s1, const char *s2, size_t n);
 
-/* Sim_sh_utils_funcs2.c */
-char *_strcpy(char *, char *);
-int _putchar(char);
-unsigned int _strspn(char *s, char *accept);
-char *_strcat(char *, const char *);
-char *_strdup(const char *);
+/* Builtins */
+int (*get_builtin(char *command))(char **args, char **front);
+int shellby_exit(char **args, char **front);
+int shellby_env(char **args, char __attribute__((__unused__)) **front);
+int shellby_setenv(char **args, char __attribute__((__unused__)) **front);
+int shellby_unsetenv(char **args, char __attribute__((__unused__)) **front);
+int shellby_cd(char **args, char __attribute__((__unused__)) **front);
+int shellby_alias(char **args, char __attribute__((__unused__)) **front);
+int shellby_help(char **args, char __attribute__((__unused__)) **front);
 
+/* Builtin Helpers */
+char **_copyenv(void);
+void free_env(void);
+char **_getenv(const char *var);
 
-/* Sim_sh_utils_funcs3.c */
-void *_realloc(void *, unsigned int, unsigned int);
-void *_calloc(unsigned int nmemb, unsigned int size);
-int _atoi(const char *str);
-char *_memset(char *, char, unsigned int);
-char *_memcpy(char *dest, char *src, unsigned int n);
+/* Error Handling */
+int create_error(char **args, int err);
+char *error_env(char **args);
+char *error_1(char **args);
+char *error_2_exit(char **args);
+char *error_2_cd(char **args);
+char *error_2_syntax(char **args);
+char *error_126(char **args);
+char *error_127(char **args);
 
-#endif
+/* Linkedlist Helpers */
+alias_t *add_alias_end(alias_t **head, char *name, char *value);
+void free_alias_list(alias_t *head);
+list_t *add_node_end(list_t **head, char *dir);
+void free_list(list_t *head);
+
+void help_all(void);
+void help_alias(void);
+void help_cd(void);
+void help_exit(void);
+void help_help(void);
+void help_env(void);
+void help_setenv(void);
+void help_unsetenv(void);
+void help_history(void);
+
+int proc_file_commands(char *file_path, int *exe_ret);
+#endif /* _SHELL_H_ */
