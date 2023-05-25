@@ -21,7 +21,7 @@
 #define BUFFER_SIZE 1024
 #define PATH_MAX_LENGTH 4096
 #define PATH_SEPARATOR ":"
-#define PROMPT ""
+#define PROMPT "$ "
 
 /* free */
 void Sim_sh_free_last_input(void);
