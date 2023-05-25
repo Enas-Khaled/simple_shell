@@ -13,7 +13,7 @@ char *Sim_sh_get_input(void)
 	size_t tinput_size = 0;
 	/* call prompt function to print */
 	do {
-		/*Sim_sh_prompt();*/
+		Sim_sh_prompt();
 		/* important debug point to read from user */
 		tnread = getline(&tinput, &tinput_size, stdin);
 		/* this checks if end of the file */

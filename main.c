@@ -7,14 +7,15 @@
  */
 int main(void)
 {
+	/*test*/
 	char *Sim_sh_input;
 	char **Sim_sh_args;
 	int Sim_sh_status;
 
 	/* to register the handler of the signal */
-	/*signal(SIGINT, Sim_sh_handle_sigint);*/
-	/*signal(SIGQUIT, Sim_sh_handle_sigquit);*/
-	/*signal(SIGTSTP, Sim_sh_handle_sigstp);*/
+	signal(SIGINT, Sim_sh_handle_sigint);
+	signal(SIGQUIT, Sim_sh_handle_sigquit);
+	signal(SIGTSTP, Sim_sh_handle_sigstp);
 
 	do {
 		Sim_sh_input = Sim_sh_get_input();
