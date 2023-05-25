@@ -1,11 +1,30 @@
 #include "shell.h"
+
 /**
- * _strcmp - this compares two strings.
- * @s1: first string.
- * @s2: second string.
- * Return: 0 equal,
- *         a negative if s1 is less than s2,
- *         a positive if s1 is greater than s2.
+ * _strlen - returns the length of a string
+ * @s: the string whose length to check
+ *
+ * Return: integer length of string
+ */
+int _strlen(const char *s)
+{
+	int i = 0;
+
+	if (!s)
+		return (0);
+
+	while (*s++)
+		i++;
+	return (i);
+}
+
+/**
+ * _strcmp - Compare two strings.
+ * @s1: The first string to compare.
+ * @s2: The second string to compare.
+ * Return: 0 if @s1 and @s2 are equal,
+ *         a negative value if @s1 is less than @s2,
+ *         or a positive value if @s1 is greater than @s2.
  */
 int _strcmp(const char *s1, const char *s2)
 {
@@ -19,85 +38,26 @@ int _strcmp(const char *s1, const char *s2)
 }
 
 /**
- * _strlen - length of a string
- * @s: a string to check
+ * _strncmp - Compare two strings up to a specified length.
+ * @s1: First string to compare.
+ * @s2: Second string to compare.
+ * @n: Maximum number of characters to compare.
  *
- * Return: the length (int)
- */
-int _strlen(const char *s)
-{
-	int k = 0;
-
-	if (!s)
-		return (0);
-
-	while (*s++)
-		k++;
-	return (k);
-}
-
-
-
-/**
- * _strstr - this is to check if needle starts with haystack
- * @haystack: it searches for a string
- * @needle: it is substr to be finded
- *
- * Return: the address of char
- *         or NULL
- */
-char *_strstr(char *haystack, char *needle)
-{
-	int k;
-
-	/*  loop */
-	for (k = 0; haystack[k] != '\0'; k++)
-	{
-		/* check */
-		if (haystack[k] == needle[0])
-		{
-			int j;
-
-			for (j = 0; needle[j] != '\0'; j++)
-			{
-				if (haystack[k + j] != needle[j])
-				{
-					break;
-				}
-			}
-			/* check new line */
-			if (needle[j] == '\0')
-			{
-				return (&haystack[k]);
-			}
-		}
-	}
-	return (NULL);
-}
-
-/**
- * _strncmp - Compare two strings with a limited length.
- * @s1: first string .
- * @s2: second string to compare.
- * @n: max of limited chars.
- *
- * Return: 0 if equal up to n,
- *         negative if s1 is less than s2,
- *         positive if s1 is greater than s2.
+ * Return: 0 if the strings are equal up to n characters, negative value
+ *         if s1 is less than s2, or positive value if s1 is greater than s2.
  */
 int _strncmp(const char *s1, const char *s2, size_t n)
 {
-	unsigned char ch1, ch2;
+	unsigned char c1, c2;
 
 	while (n-- > 0)
 	{
-		ch1 = (unsigned char) *s1++;
-		ch2 = (unsigned char) *s2++;
+		c1 = (unsigned char) *s1++;
+		c2 = (unsigned char) *s2++;
 
-		/* check equality */
-		if (ch1 != ch2)
-			return (ch1 - ch2);
-		if (ch1 == '\0')
+		if (c1 != c2)
+			return (c1 - c2);
+		if (c1 == '\0')
 			break;
 	}
 
@@ -105,13 +65,46 @@ int _strncmp(const char *s1, const char *s2, size_t n)
 }
 
 /**
- * _strchr - to locate a char in a string
+ * _strstr - checks if needle starts with haystack
+ * @haystack: string to search
+ * @needle: the substring to find
  *
- * @s: pointer to string array input
- * @c: char to find in input array
+ * Return: address of next char of haystack or NULL
+ */
+char *_strstr(char *haystack, char *needle)
+{
+	int i;
+
+	for (i = 0; haystack[i] != '\0'; i++)
+	{
+		if (haystack[i] == needle[0])
+		{
+			int j;
+
+			for (j = 0; needle[j] != '\0'; j++)
+			{
+				if (haystack[i + j] != needle[j])
+				{
+					break;
+				}
+			}
+
+			if (needle[j] == '\0')
+			{
+				return (&haystack[i]);
+			}
+		}
+	}
+	return (NULL);
+}
+
+/**
+ * _strchr - a function that locates a character in a string
  *
- * Return: first occurence of the char
- *         or Null if not exist
+ * @s: pointer to our string array input
+ * @c: character to locate from input array
+ *
+ * Return: first occurence of charatcer or null if not found
 */
 
 char *_strchr(char *s, char c)
@@ -122,9 +115,13 @@ char *_strchr(char *s, char c)
 			return (s);
 		s++;
 	}
-	/* check */
+	/**
+	 * if c is '\0', you should return
+	 * the pointer to the '\0' of the
+	 * string s
+	*/
 	if (*s == c)
 		return (s);
-
+	/*return null if not found*/
 	return (NULL);
 }

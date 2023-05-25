@@ -1,22 +1,20 @@
 #include "shell.h"
 
 /**
- * Sim_sh_shell_exit - this exits shell.
- * @args: args.
+ * shell_exit - Exit the shell.
+ * @args: Arguments.
  *
- * Return: void_fun.
+ * Return: Nothing.
  */
-
-void Sim_sh_shell_exit(char **args)
+void shell_exit(char **args)
 {
-	int Sim_sh_st = 0;
-	/* check args */
+	int status = 0;
+
 	if (args[1] != NULL)
 	{
-		Sim_sh_st = _atoi(args[1]);
+		status = _atoi(args[1]);
 	}
-	/* free */
-	Sim_sh_free_tokens(args);
-	Sim_sh_free_last_input();
-	exit(Sim_sh_st);
+	free_tokens(args);
+	free_last_input();
+	exit(status);
 }

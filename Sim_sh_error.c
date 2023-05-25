@@ -1,47 +1,39 @@
 #include "shell.h"
 
 /**
- * Sim_sh_puterror - to print error message to the stderr.
- * @err: error message.
+ * _puts - Prints a string to the standard output stream
+ * @str: The string to print
  *
- * Return: void_fun.
-*/
-void Sim_sh_puterror(char *err)
+ * Return: Void
+ */
+void _puts(char *str)
 {
-	char *Sim_sh_p = err;
+	size_t len;
+	ssize_t num_written;
 
-	while (*Sim_sh_p != '\0')
+	len = _strlen(str);
+	num_written = write(STDOUT_FILENO, str, len);
+	if (num_written == -1)
 	{
-		if (write(STDERR_FILENO, Sim_sh_p, 1) == -1)
-		{
-			perror("write");
-		return;
-		}
-		Sim_sh_p++;
+		perror("write");
 	}
 }
+
 /**
- * Sim_sh_puts - this writes str to stdout
- *  dose not including null char.
- *   If an error occurs during the writing process
- *  , the function prints an error message
+ * _puterror - Prints an error message to the standard error stream
+ * @err: The error message to print
  *
- * @str:  str to be printed
- *
- * Return: void_fun
-*/
-
-void Sim_sh_puts(char *str)
+ * Return: Void
+ */
+void _puterror(char *err)
 {
-	char *p = str;
+	size_t len;
+	ssize_t num_written;
 
-	while (*p != '\0')
+	len = _strlen(err);
+	num_written = write(STDERR_FILENO, err, len);
+	if (num_written == -1)
 	{
-		if (write(STDOUT_FILENO, p, 1) == -1)
-		{
-			perror("write");
-			return;
-		}
-		p++;
+		perror("write");
 	}
 }

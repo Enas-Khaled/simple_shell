@@ -1,68 +1,60 @@
 #include "shell.h"
 
 /**
- * Sim_sh_free_error - this frees allocted ptrs
- *     that after sys_err
- * @argv:  this is a ptr refers to a ptr
- * to the arr of str
- * @arg:s this is a ptr refers to arr of chars.
+ * free_error - frees alloc'd pointers following system error
+ * @argv: pointer to a pointer to an array of pointers
+ * @arg: pointer to a pointer to an array of characters
  *
- * Return: nothing.
+ * Return: void.
  */
-void Sim_sh_free_error(char **argv, char *arg)
+void free_error(char **argv, char *arg)
 {
-	int j = 0;
+	int i;
 
-	while (argv[j] != NULL)
-	{
-		free(argv[j]);
-		j++;
-	}
+	for (i = 0; argv[i]; i++)
+		free(argv[i]);
 	free(argv);
 	free(arg);
 	exit(EXIT_FAILURE);
 }
 
 /**
- * Sim_sh_free_tokens - this frees memory after dynamic allocated
+ * free_tokens - frees memory allocated dynamically by tokenize()
+ * @ptr: pointer to allocated memory
  *
- * @ptr: this is ptr to the memory that already allocated.
- *
- * Return: its void_fun.
+ * Return: void.
  */
-void Sim_sh_free_tokens(char **ptr)
+void free_tokens(char **ptr)
 {
-	int k = 0;
+	int i;
 
-	while (ptr[k] != NULL)
-	{
-		free(ptr[k]);
-		k++;
-	}
-
+	for (i = 0; ptr[i]; i++)
+		free((ptr[i]));
 	free(ptr);
 }
 
+
 /**
- * Sim_sh_free_path - this frees the variable  that contains
- *        a PATH env for var
+ * free_path - Frees the global variable containing the PATH environment
+ *              variable value
  *
- * Return: Nothing_void
+ * Return: Nothing
  */
-void Sim_sh_free_path(void)
+void free_path(void)
 {
 	if (environ != NULL)
 	{
-		size_t Sim_sh_index;
+		size_t i = 0;
 
-		for (Sim_sh_index = 0; environ[Sim_sh_index] != NULL; Sim_sh_index++)
+		while (environ[i] != NULL)
 		{
-			if (_strncmp(environ[Sim_sh_index], "PATH=", 5) == 0)
+			if (_strncmp(environ[i], "PATH=", 5) == 0)
 			{
-				free(environ[Sim_sh_index]);
-				environ[Sim_sh_index] = NULL;
+				free(environ[i]);
+				environ[i] = NULL;
 				break;
 			}
+			i++;
 		}
 	}
 }

@@ -1,44 +1,51 @@
 #include "shell.h"
 
-static char *Sim_sh_last_input;
+static char *last_input;
 /**
- * Sim_sh_get_input - to read line from stdinput.
+ * get_input - Read the line of input from user.
  *
- * Return: ptr to buf of user's input.
+ * Return: Pointer to a buffer conatining the user's input.
 */
-char *Sim_sh_get_input(void)
+char *get_input(void)
 {
-	ssize_t tnread;
-	char *tinput = NULL;
-	size_t tinput_size = 0;
-	/* call prompt function to print */
+	char *input = NULL;
+	size_t input_size = 0;
+	ssize_t nread;
+
 	do {
-		Sim_sh_prompt();
-		/* important debug point to read from user */
-		tnread = getline(&tinput, &tinput_size, stdin);
-		/* this checks if end of the file */
-		if (tnread == -1)
+		/* print shell prompt */
+		prompt();
+
+		/* get a line of input from user */
+		nread = getline(&input, &input_size, stdin);
+
+		/* check for EOF or error */
+		if (nread == -1)
 		{
-			free(tinput);
-			Sim_sh_puts("\n");
+			free(input);
+			_puts("\n");
 			return (NULL);
 		}
-		/* to delete new_line trailing */
-		tinput[tnread - 1] = '\0';
 
-	} while (tinput[0] == '\0' || isspace(tinput[0]));
-	/* to put last input and update it - hope to work */
-	Sim_sh_last_input = tinput;
-	return (tinput);
+		/* remove trailing newline character */
+		input[nread - 1] = '\0';
+
+	} while (input[0] == '\0' || isspace(input[0]));
+
+	/* update last_input to point to the new input */
+	last_input = input;
+	return (input);
 }
 
 /**
- * Sim_sh_free_last_input - to free last input from user.
+ * free_last_input - Frees the most recent input entered by the user.
  *
- * Return: void_fun
+ * This function frees the memory allocated for the most recent input string
+ * entered by the user. It should be called after the input string is no longer
+ * needed.
  */
-void Sim_sh_free_last_input(void)
+void free_last_input(void)
 {
-	free(Sim_sh_last_input);
-	Sim_sh_last_input = NULL;
+	free(last_input);
+	last_input = NULL;
 }

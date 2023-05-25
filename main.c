@@ -1,42 +1,40 @@
 #include "shell.h"
 
 /**
- * main - entery point
+ * main - implements a simple shell
  *
- * Return: on exit -> EXIT_SUCCESS.
+ * Return: EXIT_SUCCESS.
  */
 int main(void)
 {
-	char *Sim_sh_input;
-	char **Sim_sh_args;
-	int Sim_sh_status;
+	char *input;
+	char **args;
+	int status;
 
-	/* to register the handler of the signal */
-	signal(SIGINT, Sim_sh_handle_sigint);
-	signal(SIGQUIT, Sim_sh_handle_sigquit);
-	signal(SIGTSTP, Sim_sh_handle_sigstp);
+	/* Register signal handlers */
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, handle_sigquit);
+	signal(SIGTSTP, handle_sigstp);
 
 	do {
-		Sim_sh_input = Sim_sh_get_input();
-		/* to detect end of file and stop */
-		if (!Sim_sh_input || !*Sim_sh_input)
+		input = get_input();
+		if (!input || !*input)/* EOF detected, exit the loop */
 			break;
-		/* debug point */
-		Sim_sh_args = Sim_sh_tokenize_input(Sim_sh_input);
-		if (!Sim_sh_args || !*Sim_sh_args)
+
+		args = tokenize_input(input);
+		if (!args || !*args)
 		{
-			free(Sim_sh_input);
-			Sim_sh_free_tokens(Sim_sh_args);
+			free(input);
+			free_tokens(args);
 			continue;
 		}
-		/* debug point */
-		Sim_sh_status = Sim_sh_execute(Sim_sh_args);
-		free(Sim_sh_input);
-		Sim_sh_free_tokens(Sim_sh_args);
+		status = execute(args);
+		free(input);
+		free_tokens(args);
 
-		/* debug point */
-		Sim_sh_status = 1;
-	} while (Sim_sh_status);
+		/* Set status to 1 to continue the loop */
+		status = 1;
+	} while (status);
 
 	return (EXIT_SUCCESS);
 }

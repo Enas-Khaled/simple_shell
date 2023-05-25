@@ -1,50 +1,48 @@
 #include "shell.h"
 
 /**
- * Sim_sh_get_line - to read the input from  stdinput.
+ * get_line - Read input from the standard input.
  *
- * Return: string from user.
+ * Return: The string enter by the user.
 */
-void *Sim_sh_get_line(void)
+void *get_line(void)
 {
-	int Sim_sh_input_len = 0;
-	char *Sim_sh_input_str = NULL;
-	char Sim_sh_current_char;
-	static char Sim_sh_buffer[BUFFER_SIZE];
-	static int Sim_sh_buf_pos, Sim_sh_buf_size;
+	static char buffer[BUFFER_SIZE];
+	static int buf_pos, buf_size;
+	char *input_str = NULL;
+	char current_char;
+	int input_len = 0;
 
 	while (1)
 	{
-		/* check position */
-		if (Sim_sh_buf_pos >= Sim_sh_buf_size)
+		if (buf_pos >= buf_size)
 		{
-			/* bedug point */
-			Sim_sh_buf_size = read(STDIN_FILENO, Sim_sh_buffer, BUFFER_SIZE);
-			Sim_sh_buf_pos = 0;
-			/* check */
-			if (Sim_sh_buf_size == 0)
-				return (Sim_sh_input_str);
-			else if (Sim_sh_buf_size < 0)
+			buf_size = read(STDIN_FILENO, buffer, BUFFER_SIZE);
+			buf_pos = 0;
+			if (buf_size == 0)
+				return (input_str);
+			else if (buf_size < 0)
 			{
 				perror("read");
-				/* err */
 				return (NULL);
 			}
 		}
-		Sim_sh_current_char = Sim_sh_buffer[Sim_sh_buf_pos];/* debug point */
-		Sim_sh_buf_pos++;/*update pos */
-		if (Sim_sh_current_char == '\n')/* check if new line */
+
+		current_char = buffer[buf_pos];
+
+		buf_pos++;
+
+		if (current_char == '\n')
 		{
-			/* suppose _realloc() */
-			Sim_sh_input_str = realloc(Sim_sh_input_str, Sim_sh_input_len + 1);
-			Sim_sh_input_str[Sim_sh_input_len] = '\0';
-			return (Sim_sh_input_str);
+			input_str = realloc(input_str, input_len + 1);
+			input_str[input_len] = '\0';
+			return (input_str);
 		}
 		else
 		{
-			Sim_sh_input_str = realloc(Sim_sh_input_str, Sim_sh_input_len + 1);
-			Sim_sh_input_str[Sim_sh_input_len] = Sim_sh_current_char;
-			Sim_sh_input_len++;/* update len */
+			input_str = realloc(input_str, input_len + 1);
+			input_str[input_len] = current_char;
+			input_len++;
 		}
 	}
 }

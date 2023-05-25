@@ -1,21 +1,18 @@
 #include "shell.h"
 
 /**
- * Sim_sh_shell_env -  print all the environment variables to the
- * standard output
+ * shell_env - Prints all the environment variables.
  *
- * Return: on success -> 0 completed successfully
+ * Return: void.
  */
-
-int Sim_sh_shell_env(void)
+int shell_env(void)
 {
-	int k = 0;
+	int i;
 
-	while (environ[k] != NULL)
+	for (i = 0; environ[i]; i++)
 	{
-		Sim_sh_puts(environ[k]);
+		_puts(environ[i]);
 		_putchar('\n');
-		k++;
 	}
 
 	return (0);

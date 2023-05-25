@@ -1,51 +1,50 @@
 #include "shell.h"
 
 /**
- * Sim_sh_execute - this executes the command with its args.
- * @argv: array containing ( command and its arguments).
+ * execute - Execute a command with arguments.
+ * @argv: An array of strings containing the command and its arguments.
  *
- * Return: Exit status of that command.
+ * Return: The exit status of the executed command.
  */
-int Sim_sh_execute(char **argv)
+int execute(char **argv)
 {
-	int Sim_sh_status = 0;
 	pid_t id;
-	char *Sim_sh_cmd_path, *Sim_sh_envp[2];
-	/* check */
+	int status = 0;
+	char *cmd_path, *envp[2];
+
 	if (argv == NULL || *argv == NULL)
-		return (Sim_sh_status);
-	if (Sim_sh_check_for_builtin(argv))
-		return (Sim_sh_status);
-	id = fork(); /* child p */
+		return (status);
+	if (check_for_builtin(argv))
+		return (status);
+
+	id = fork();
 	if (id < 0)
 	{
-		Sim_sh_puterror("fork");
+		_puterror("fork");
 		return (1);
 	}
-	/* check */
 	if (id == -1)
-		perror(argv[0]), Sim_sh_free_tokens(argv), Sim_sh_free_last_input();
+		perror(argv[0]), free_tokens(argv), free_last_input();
 	if (id == 0)
 	{
-		Sim_sh_envp[0] = Sim_sh_get_path();
-		Sim_sh_envp[1] = NULL;
-		Sim_sh_cmd_path = NULL;
-		/* debug point */
+		envp[0] = get_path();
+		envp[1] = NULL;
+		cmd_path = NULL;
 		if (argv[0][0] != '/')
-			Sim_sh_cmd_path = Sim_sh_find_in_path(argv[0]);
-		if (Sim_sh_cmd_path == NULL)
-			Sim_sh_cmd_path = argv[0];
-		if (execve(Sim_sh_cmd_path, argv, Sim_sh_envp) == -1)
+			cmd_path = find_in_path(argv[0]);
+		if (cmd_path == NULL)
+			cmd_path = argv[0];
+		if (execve(cmd_path, argv, envp) == -1)
 		{
-			perror(argv[0]);
-			Sim_sh_free_tokens(argv);
-			Sim_sh_free_last_input();
+			perror(argv[0]), free_tokens(argv), free_last_input();
 			exit(EXIT_FAILURE);
 		}
-	} else
-
+	}
+	else
+	{
 		do {
-			waitpid(id, &Sim_sh_status, WUNTRACED);
-		} while (!WIFEXITED(Sim_sh_status) && !WIFSIGNALED(Sim_sh_status));
-	return (Sim_sh_status);
+			waitpid(id, &status, WUNTRACED);
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+	}
+	return (status);
 }

@@ -1,44 +1,40 @@
 #include "shell.h"
+
 /**
- * Sim_sh_handle_sigquit - to handle -> (Ctrl+\)
- * @sig: num of signal
+ * handle_sigint - Signal handler for SIGINT (Ctrl+C)
+ * @sig: Signal number
  *
- * Return: void_fun
+ * Return: Nothing
  */
-void Sim_sh_handle_sigquit(int sig)
+void handle_sigint(int sig)
 {
 	(void) sig;
-	/* to std err */
-	Sim_sh_puterror("Quit (core dumped)\n");
+	_putchar('\n');
+	prompt();
+}
+
+/**
+ * handle_sigquit - Signal handler for SIGQUIT (Ctrl+\)
+ * @sig: Signal number
+ *
+ * Return: Nothing
+ */
+void handle_sigquit(int sig)
+{
+	(void) sig;
+	_puterror("Quit (core dumped)\n");
 	exit(EXIT_SUCCESS);
 }
 
 /**
- * Sim_sh_handle_sigint - to handle -> Ctrl+C
- * @sig: num of signal
+ * handle_sigstp - Signal handler for SIGTSTP (Ctrl+Z)
+ * @sig: Signal number
  *
- * Return: void_fun
+ * Return: Nothing
  */
-void Sim_sh_handle_sigint(int sig)
+void handle_sigstp(int sig)
 {
 	(void) sig;
-	/* new line */
-	_putchar('\n');
-	/* call prompt shell */
-	Sim_sh_prompt();
-}
-
-
-/**
- * Sim_sh_handle_sigstp - to handle -> Ctrl+Z
- * @sig: num of signal
- *
- * Return: void_fun
- */
-void Sim_sh_handle_sigstp(int sig)
-{
-	(void) sig;
-	Sim_sh_puts("\n");
-	/* call prompt fun */
-	Sim_sh_prompt();
+	_puts("\n");
+	prompt();
 }

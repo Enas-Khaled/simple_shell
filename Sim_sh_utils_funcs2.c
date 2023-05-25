@@ -1,84 +1,25 @@
 #include "shell.h"
 
 /**
- * _strspn - to get the length of a prefix
+ * _strcpy - copies a string
+ * @dest: the destination
+ * @src: the source
  *
- * @s: pointer to str input
- * @accept: substr prefix
- *
- * Return: a nums of bytes in the init segment
- */
-unsigned int _strspn(char *s, char *accept)
-{
-	unsigned int k, a;
-
-	for (k = 0; s[k]; k++)
-	{
-		for (a = 0; accept[a]; a++)
-		{
-			if (s[k] == accept[a])
-				break;
-		}
-		if (!accept[a])
-			return (k);
-	}
-
-	return (k);
-}
-/**
- * _strcpy - to copy string
- * @dest: dest
- * @src: src
- *
- * Return: ptr to dest
+ * Return: pointer to destination
  */
 char *_strcpy(char *dest, char *src)
 {
-	int k = 0;
+	int i = 0;
 
 	if (dest == src || src == 0)
 		return (dest);
-	while (src[k])
+	while (src[i])
 	{
-		dest[k] = src[k];
-		k++;
+		dest[i] = src[i];
+		i++;
 	}
-	dest[k] = 0;
+	dest[i] = 0;
 	return (dest);
-}
-/**
- *_putchar - to write the char to stdout
- * @c: char
- * Return: 1 (success).
- *         -1 On error,
- *          errno is set appropriately.
- */
-int _putchar(char c)
-{
-	return (write(1, &c, 1));
-}
-
-/**
- * _strdup - to duplicate any str
- * @str: string
- *
- * Return: pointer to duplicated str
- */
-char *_strdup(const char *str)
-{
-	int sim_length = 0;
-	char *sim_ret;
-
-	if (str == NULL)
-		return (NULL);
-	while (*str++)
-		sim_length++;
-	sim_ret = malloc(sizeof(char) * (sim_length + 1));
-	if (!sim_ret)
-		return (NULL);
-	for (sim_length++; sim_length--;)
-		sim_ret[sim_length] = *--str;
-	return (sim_ret);
 }
 
 /**
@@ -90,12 +31,73 @@ char *_strdup(const char *str)
  */
 char *_strcat(char *dest, const char *src)
 {
-	char *sim_ret = dest;
+	char *ret = dest;
 
 	while (*dest)
 		dest++;
 	while (*src)
 		*dest++ = *src++;
 	*dest = *src;
-	return (sim_ret);
+	return (ret);
+}
+
+/**
+ * _strdup - duplicates a string
+ * @str: the string to duplicate
+ *
+ * Return: pointer to the duplicated string
+ */
+char *_strdup(const char *str)
+{
+	int length = 0;
+	char *ret;
+
+	if (str == NULL)
+		return (NULL);
+	while (*str++)
+		length++;
+	ret = malloc(sizeof(char) * (length + 1));
+	if (!ret)
+		return (NULL);
+	for (length++; length--;)
+		ret[length] = *--str;
+	return (ret);
+}
+
+/**
+ *_putchar - writes the character c to stdout
+ * @c: The character to print
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
+ */
+int _putchar(char c)
+{
+	return (write(1, &c, 1));
+}
+
+/**
+ * _strspn - a function that gets the
+ *           length of a prefix substring
+ *
+ * @s: pointer to string input
+ * @accept: substring prefix to look for
+ *
+ * Return: the number of bytes in the initial segment
+ */
+unsigned int _strspn(char *s, char *accept)
+{
+	unsigned int i, j;
+
+	for (i = 0; s[i]; i++)
+	{
+		for (j = 0; accept[j]; j++)
+		{
+			if (s[i] == accept[j])
+				break;
+		}
+		if (!accept[j])
+			return (i);
+	}
+
+	return (i);
 }

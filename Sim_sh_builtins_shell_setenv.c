@@ -1,66 +1,53 @@
 #include "shell.h"
 
 /**
- * set_env_var - Set the value of an environment variable.
- * @nom: Name of the environment variable.
- * @val: Value of the environment variable.
+ * shell_setenv - Set the value of an environment variable
+ * @args: Arguments (name and value of the environment variable)
  *
- * This function sets the value of an environment variable.
- *
- * Return: 0 on success, -1 on failure.
+ * Return: Nothing
  */
-int set_env_var(const char *nom, const char *val)
+int shell_setenv(char **args)
 {
-	if (setenv(nom, val, 1) != 0)
+	char *name, *value;
+
+	if (args[1] == NULL || args[2] == NULL)
 	{
-		Sim_sh_puterror("setenv");
+		_puterror("Usage: setenv VARIABLE VALUE\n");
+		return (-1);
+	}
+
+	name = args[1];
+	value = args[2];
+
+	if (setenv(name, value, 1) != 0)
+	{
+		_puterror("setenv");
 		return (-1);
 	}
 	return (0);
 }
 
 /**
- * Sim_sh_shell_setenv - Set the value of an environment variable.
- * @args: Arguments (name and value of the environment variable).
+ * shell_unsetenv - Unset an environment variable
+ * @args: Arguments (name of the environment variable)
  *
- * Return: 0 on success, -1 on failure.
+ * Return: Nothing
  */
-int Sim_sh_shell_setenv(char **args)
+int shell_unsetenv(char **args)
 {
-	char *nom, *val;
+	char *name;
 
-	if (args[1] == NULL || args[2] == NULL)
-	{
-		Sim_sh_puterror("Usage: setenv NOM VAL\n");
-		return (-1);
-	}
-	nom = args[1];
-	val = args[2];
-
-	return (set_env_var(nom, val));
-}
-
-/**
- * Sim_sh_shell_unsetenv - Unset an environment variable.
- * @args: Arguments (name of the environment variable).
- *
- * This function unsets an environment variable
- * using the name provided as an argument.
- *
- * Return: 0 on success, -1 on failure.
- */
-
-int Sim_sh_shell_unsetenv(char **args)
-{
 	if (args[1] == NULL)
 	{
-		Sim_sh_puterror("Usage: unsetenv NAME\n");
+		_puterror("Usage: unsetenv VARIABLE\n");
 		return (-1);
 	}
-	if (unsetenv(args[1]) != 0)
+
+	name = args[1];
+
+	if (unsetenv(name) != 0)
 	{
-		Sim_sh_puterror("unsetenv");
-		return (-1);
+		_puterror("unsetenv");
 	}
 	return (0);
 }

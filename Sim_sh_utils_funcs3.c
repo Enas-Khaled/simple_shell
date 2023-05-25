@@ -1,68 +1,79 @@
 #include "shell.h"
+
 /**
- * _calloc - to allocate memory for an array (with malloc)
+ * _atoi - Converts a string to an integer.
+ * @str: The string to convert.
  *
- * @nmemb: size of array
- * @size: size of each element
- *
- * Return: ptr with new allocated memory
- *         NULL if it faild
-*/
-
-void *_calloc(unsigned int nmemb, unsigned int size)
-{
-	char *t;
-
-	if (nmemb == 0 || size == 0)
-		return (NULL);
-
-	t = malloc(nmemb * size);
-	if (t == NULL)
-		return (NULL);
-
-	_memset(t, 0, nmemb * size);
-
-	return (t);
-}
-/**
- * _atoi - to Convert a string to an integer.
- * @str: string
- *
- * Return: integer
+ * Return: The integer value of the string.
  */
 int _atoi(const char *str)
 {
-	int k, sim_sign;
-	unsigned int sim_num;
+	int i, sign;
+	unsigned int num;
 
-	k = 0;
-	sim_sign = 1;
-	sim_num = 0;
+	i = 0;
+	sign = 1;
+	num = 0;
 
-	while (str[k] != '\0')
+	while (str[i] != '\0')
 	{
-		if (str[k] == '-')
-			sim_sign *= -1;
-		else if (str[k] >= '0' && str[k] <= '9')
-			sim_num = (sim_num * 10) + (str[k] - '0');
+		if (str[i] == '-')
+			sign *= -1;
+		else if (str[i] >= '0' && str[i] <= '9')
+			num = (num * 10) + (str[i] - '0');
 		else
 			break;
-		k++;
+		i++;
 	}
-	return (sim_num * sim_sign);
+	return (num * sign);
 }
 
 /**
- * _realloc - to reallocate block in the memory
- * @ptr: ptr to previous alloc block
- * @old_size: the size of prev block
- * @new_size: the size of new block
+ **_memset - fills memory with a constant byte
+ *@s: the pointer to the memory area
+ *@b: the byte to fill *s with
+ *@n: the amount of bytes to be filled
+ *Return: (s) a pointer to the memory area s
+ */
+char *_memset(char *s, char b, unsigned int n)
+{
+	unsigned int i;
+
+	for (i = 0; i < n; i++)
+		s[i] = b;
+	return (s);
+}
+
+/**
+ * _memcpy - function that copies memory area
  *
- * Return: ptr to alloc blocK.
+ * @dest: buffer where we will copy to
+ * @src: what we are to copy
+ * @n: n bytes of @src
+ *
+ * Return: Always 0 (Success)
+*/
+
+char *_memcpy(char *dest, char *src, unsigned int n)
+{
+	unsigned int i;
+
+	for (i = 0; i < n; i++)
+		dest[i] = src[i];
+	return (dest);
+}
+
+/**
+ * _realloc - reallocates a block of memory
+ * @ptr: pointer to previous malloc'ated block
+ * @old_size: byte size of previous block
+ * @new_size: byte size of new block
+ *
+ * Return: pointer to da ol'block nameen.
  */
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
-	char *tp;
+	char *p;
 
 	if (!ptr)
 		return (malloc(new_size));
@@ -71,50 +82,43 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 	if (new_size == old_size)
 		return (ptr);
 
-	tp = malloc(new_size);
-	if (!tp)
+	p = malloc(new_size);
+	if (!p)
 		return (NULL);
 
 	old_size = old_size < new_size ? old_size : new_size;
 	while (old_size--)
-		tp[old_size] = ((char *)ptr)[old_size];
+		p[old_size] = ((char *)ptr)[old_size];
 	free(ptr);
-	return (tp);
-}
-
-
-/**
- **_memset - to fill memory with a constant byte
- *@s: ptr to the memory area
- *@b: byte to fill *s with
- *@n: the no of bytes to be filled
- *Return: ptr to the memory area
- */
-char *_memset(char *s, char b, unsigned int n)
-{
-	unsigned int k;
-
-	for (k = 0; k < n; k++)
-		s[k] = b;
-	return (s);
+	return (p);
 }
 
 /**
- * _memcpy - to copy a memory area
+ * _calloc - a function that allocates
+ *           memory for an array using malloc
  *
- * @dest: buffer will copy to
- * @src: what to copy
- * @n: bytes of src
+ *           It is basically the equivalent to
+ *           malloc followed by memset
  *
- * Return: 0 on Success
+ * @nmemb: size of array
+ * @size: size of each element
+ *
+ * Return: pointer with new allocated memory
+ *         or NULL if it fails
 */
 
-char *_memcpy(char *dest, char *src, unsigned int n)
+void *_calloc(unsigned int nmemb, unsigned int size)
 {
-	unsigned int k;
+	char *p;
 
-	for (k = 0; k < n; k++)
-		dest[k] = src[k];
-	return (dest);
+	if (nmemb == 0 || size == 0)
+		return (NULL);
+
+	p = malloc(nmemb * size);
+	if (p == NULL)
+		return (NULL);
+
+	_memset(p, 0, nmemb * size);
+
+	return (p);
 }
-

@@ -1,11 +1,11 @@
 #include "shell.h"
 
 /**
- * Sim_sh_get_path - To return val of a PATH env_var.
+ * get_path - Returns the value of the PATH enviroment variable.
  *
- * Return: ptr to $PATH.
+ * Return: Pointer to the value of $PATH.
  */
-char *Sim_sh_get_path(void)
+char *get_path(void)
 {
-	return (Sim_sh_getenv("PATH"));
+	return (_getenv("PATH"));
 }

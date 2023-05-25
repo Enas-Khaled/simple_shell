@@ -1,14 +1,12 @@
 #include "shell.h"
 
 /**
- * Sim_sh_prompt - this prints prompt of the shell
- *                 to stdin_stream.
+ * prompt - Print shell prompt to stdin stream.
  *
- * Return: nothing.
+ * Return: void.
  */
-void Sim_sh_prompt(void)
+void prompt(void)
 {
-	/* debug point */
-	Sim_sh_puts(PROMPT);
+	_puts(PROMPT);
 	fflush(stdout);
 }

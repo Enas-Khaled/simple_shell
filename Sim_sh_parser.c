@@ -1,71 +1,64 @@
 #include "shell.h"
 
 /**
- * Sim_sh_tokenize - to parse the input to args
- * @str: str for tokening it.
- * @delim: for splitting.
+ * tokenize - parsing user input into arguments
+ *            by splits an array string into tokens using a delimiter.
+ * @str: the string to be tokenized.
+ * @delim: the delimiter used to split the string.
  *
- * Return: arr of ptrs to tokens,
- *         NULL on errors.
+ * Return: an array of pointers to the tokens,
+ *         or NULL if an error occurs.
  */
-char **Sim_sh_tokenize(char *str, const char *delim)
+char **tokenize(char *str, const char *delim)
 {
-	int k = 0;
-	char *t_token = NULL;
-	char **t_ret = NULL;
+	char *token = NULL;
+	char **ret = NULL;
+	int i = 0;
 
-	/* parse token */
-	t_token = strtok(str, delim);
-	while (t_token)
+	token = strtok(str, delim);
+	while (token)
 	{
-		t_ret = realloc(t_ret, sizeof(char *) * (k + 1));
-		/* check for err */
-		if (t_ret == NULL)
+		ret = realloc(ret, sizeof(char *) * (i + 1));
+		if (ret == NULL)
 			return (NULL);
-		/* allocate */
-		t_ret[k] = malloc(_strlen(t_token) + 1);
-		if (!(t_ret[k]))
+
+		ret[i] = malloc(_strlen(token) + 1);
+		if (!(ret[i]))
 			return (NULL);
-		/* copy token and update to next */
-		_strcpy(t_ret[k], t_token);
-		t_token = strtok(NULL, delim);
-		k++;
+
+		_strcpy(ret[i], token);
+		token = strtok(NULL, delim);
+		i++;
 	}
-	/* need to update with new size of arr*/
-	t_ret = realloc(t_ret, (k + 1) * sizeof(char *));
-	/* check for err */
-	if (!t_ret)
+	/*increase the size of the array*/
+	ret = realloc(ret, (i + 1) * sizeof(char *));
+	if (!ret)
 		return (NULL);
 
-	t_ret[k] = NULL;
-	return (t_ret);
+	ret[i] = NULL;
+	return (ret);
 }
 
 /**
- * Sim_sh_tokenize_input - to split input to tokens
- *                using tokenize fun.
- * @input: input
+ * tokenize_input - splits a user input string into tokens with tokenize().
+ * @input: the user input string to be tokenized
  *
- * Return: arr of ptrs to tokens
- *         NULL on errors
+ * Return: an array of pointers to the tokens, or NULL if an error occurs
  */
-char **Sim_sh_tokenize_input(char *input)
+char **tokenize_input(char *input)
 {
-	char *s_tmp = NULL;
-	char **s_tokens = NULL;
+	char **tokens = NULL;
+	char *tmp = NULL;
 
-	/* dulicate input */
-	s_tmp = _strdup(input);
-	if (s_tmp == NULL)
+	tmp = _strdup(input);
+	if (tmp == NULL)
 	{
-		/* error */
-		Sim_sh_puts("Memory allocation error\n");
+		_puts("Memory allocation error\n");
 		exit(EXIT_FAILURE);
 	}
 
-	/* debug point */
-	s_tokens = Sim_sh_tokenize(s_tmp, " \t\r\n\a");
-	free(s_tmp);
-	/* return tokens */
-	return (s_tokens);
+	tokens = tokenize(tmp, " \t\r\n\a");
+	free(tmp);
+
+	return (tokens);
 }
