@@ -131,7 +131,7 @@ int Sim_sh_run_args(char **args, char **front, int *exe_ret)
  * Sim_sh_handle_args - Sim_sh_handle_args.
  * @exe_ret: exe_ret.
  *
- * Return: -2 or -1 
+ * Return: -2 or -1
  */
 int Sim_sh_handle_args(int *exe_ret)
 {
