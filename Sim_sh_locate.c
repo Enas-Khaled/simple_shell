@@ -101,7 +101,7 @@ char *Sim_sh_fill_path_dir(char *path)
  * Sim_sh_get_path_dir - TSim_sh_get_path_dir
  * @path: path
  *
- * Return: ptr 
+ * Return: ptr
  */
 list_t *Sim_sh_get_path_dir(char *path)
 {
